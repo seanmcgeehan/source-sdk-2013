@@ -8370,6 +8370,7 @@ void CTFPlayerShared::DetermineDisguiseWeapon( bool bForcePrimary )
 	{
 		CTFWeaponBase *pLastDisguiseWeapon = m_hDisguiseWeapon;
 		CTFWeaponBase *pFirstValidWeapon = NULL;
+
 		// Cycle through the target's weapons and see if we have a match.
 		// Note that it's possible the disguise target doesn't have a weapon in the slot we want,
 		// for example if they have replaced it with an unlockable that isn't a weapon (wearable).
@@ -8473,6 +8474,7 @@ void CTFPlayerShared::DetermineDisguiseWeapon( bool bForcePrimary )
 			m_hDisguiseWeapon->m_bDisguiseWeapon = true;
 			m_hDisguiseWeapon->SetContextThink( &CTFWeaponBase::DisguiseWeaponThink, gpGlobals->curtime + 0.5, "DisguiseWeaponThink" );
 
+			m_hDisguiseWeapon->UpdateExtraWearables();
 
 			// Ammo/clip state is displayed to attached medics
 			m_iDisguiseAmmo = 0;
