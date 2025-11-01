@@ -6099,6 +6099,19 @@ void CTFWeaponBase::UpdateWeaponBodyGroups( CTFPlayer* pPlayer, bool bHandleDepl
 {
 	if ( !pPlayer )
 		return;
+	//Msg("in Update Bodygroups");
+	if (pPlayer->m_Shared.GetDisguiseWeapon())
+	{
+		//Msg("Disguise weapon");
+		pPlayer->m_Shared.GetDisguiseWeapon()->UpdateBodygroups(pPlayer, 1); 
+		if (pPlayer->m_Shared.InCond(TF_COND_DISGUISED))
+		{
+			//We need to update body groups for Spies disguised weapon if we are disguised. 
+			//This function is called after SetBodyGroups Dirty, so we need to call it here
+			// or spys will not have the correct body groups
+			pPlayer->m_Shared.GetDisguiseWeapon()->UpdateBodygroups( pPlayer , 1);
+		}
+	}
 
 	for ( int i = 0; i < pPlayer->WeaponCount(); i++) 
 	{

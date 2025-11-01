@@ -2050,7 +2050,7 @@ bool CEconEntity::UpdateBodygroups( CBaseCombatCharacter* pOwner, int iState )
 
 		if ( iBodyGroup == -1 )
 			continue;
-
+			
 		pOwner->SetBodygroup( iBodyGroup, iState );
 	}
 
@@ -2068,7 +2068,7 @@ bool CEconEntity::UpdateBodygroups( CBaseCombatCharacter* pOwner, int iState )
 			pOwner->SetBodygroup( iBodyGroup, iState );
 		}
 
-		// should we override this model bodygroup
+
 		if ( pStyle->GetBodygroupName() != NULL )
 		{
 			int iBodyGroup = pOwner->FindBodygroupByName( pStyle->GetBodygroupName() );
@@ -2102,7 +2102,7 @@ bool CEconEntity::UpdateBodygroups( CBaseCombatCharacter* pOwner, int iState )
 			}
 		}
 	}
-	 
+
 	return true;
 }
 

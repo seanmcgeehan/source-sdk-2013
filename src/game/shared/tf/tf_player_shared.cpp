@@ -8449,6 +8449,8 @@ void CTFPlayerShared::DetermineDisguiseWeapon( bool bForcePrimary )
 			if ( pContainer )
 			{
 				pItem = pContainer->GetItem();
+				CEconItemView clonedItem = *pContainer->GetItem(); // make a copy
+				pItem = &clonedItem;
 			}
 		}
 
@@ -8472,8 +8474,12 @@ void CTFPlayerShared::DetermineDisguiseWeapon( bool bForcePrimary )
 			m_hDisguiseWeapon->m_iState = WEAPON_IS_ACTIVE;
 			m_hDisguiseWeapon->m_bDisguiseWeapon = true;
 			m_hDisguiseWeapon->SetContextThink( &CTFWeaponBase::DisguiseWeaponThink, gpGlobals->curtime + 0.5, "DisguiseWeaponThink" );
+			m_hDisguiseWeapon->GetAttributeContainer()->SetItem(pItem);
 
 			m_hDisguiseWeapon->UpdateExtraWearables();
+			m_hDisguiseWeapon->UpdateBodygroups(m_pOuter, 1);
+
+			RecalculatePlayerBodygroups();
 
 			// Ammo/clip state is displayed to attached medics
 			m_iDisguiseAmmo = 0;
