@@ -531,9 +531,11 @@ bool CTFMechanicalArm::UpdateBodygroups( CBaseCombatCharacter* pOwner, int iStat
 		}
 
 		// Apply disguise weapon bodygroups (similar to the fix in tf_item_wearable.cpp)
-		if ( pTFOwner->m_Shared.GetDisguiseWeapon() == this )
+		// This needs to reach out to the disguise weapon, not check if this IS the disguise weapon,
+		// because UpdateBodygroups may be called on the spy's real weapon.
+		if ( pTFOwner->m_Shared.GetDisguiseWeapon() )
 		{
-			CAttributeContainer* pCont = GetAttributeContainer();
+			CAttributeContainer* pCont = pTFOwner->m_Shared.GetDisguiseWeapon()->GetAttributeContainer();
 			if ( pCont )
 			{
 				CEconItemView* pItem = pCont->GetItem();
