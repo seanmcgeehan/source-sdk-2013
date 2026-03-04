@@ -1459,6 +1459,7 @@ void CTFPlayerShared::OnDataChanged( void )
 	{
 		m_hDisguiseWeapon->UpdateVisibility();
 		m_hDisguiseWeapon->UpdateParticleSystems();
+		m_hDisguiseWeapon->UpdateAttachmentModels();
 	}
 
 	// XXX(JohnS): This is not the right place to do these things, SetWeaponVisible on the *client* is just stomping
