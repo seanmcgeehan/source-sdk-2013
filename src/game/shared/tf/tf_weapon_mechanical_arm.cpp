@@ -7,7 +7,6 @@
 #include "cbase.h"
 #include "tf_weapon_mechanical_arm.h"
 #include "in_buttons.h"
-#include "animation.h"
 
 #if !defined( CLIENT_DLL )
 #include "tf_player.h"
@@ -528,45 +527,6 @@ bool CTFMechanicalArm::UpdateBodygroups( CBaseCombatCharacter* pOwner, int iStat
 		if ( pVM )
 		{
 			pVM->SetBodygroup( 1, iState );
-		}
-
-		// Apply disguise weapon bodygroups (similar to the fix in tf_item_wearable.cpp)
-		// This needs to reach out to the disguise weapon, not check if this IS the disguise weapon,
-		// because UpdateBodygroups may be called on the spy's real weapon.
-		if ( pTFOwner->m_Shared.GetDisguiseWeapon() )
-		{
-			CAttributeContainer* pCont = pTFOwner->m_Shared.GetDisguiseWeapon()->GetAttributeContainer();
-			if ( pCont )
-			{
-				CEconItemView* pItem = pCont->GetItem();
-				if ( pItem )
-				{
-					CTFPlayer* pDisguiseTarget = pTFOwner->m_Shared.GetDisguiseTarget();
-					if ( pDisguiseTarget )
-					{
-						const CEconItemDefinition* pItemDef = pItem->GetItemDefinition();
-						if ( pItemDef )
-						{
-							// Update our disguise bodygroup.
-							int iDisguiseBody = pTFOwner->m_Shared.GetDisguiseBody();
-
-							int iNumBodyGroups = pItemDef->GetNumModifiedBodyGroups( 0 ); // we must use team 0
-							for ( int i = 0; i < iNumBodyGroups; ++i )
-							{
-								int iBody = 0;
-								const char* pszBodyGroup = pItem->GetStaticData()->GetModifiedBodyGroup( 0, i, iBody );
-								int iBodyGroup = pDisguiseTarget->FindBodygroupByName( pszBodyGroup );
-								if ( iBodyGroup == -1 )
-									continue;
-
-								::SetBodygroup( pDisguiseTarget->GetModelPtr(), iDisguiseBody, iBodyGroup, iState );
-							}
-
-							pTFOwner->m_Shared.SetDisguiseBody( iDisguiseBody );
-						}
-					}
-				}
-			}
 		}
 	}
 

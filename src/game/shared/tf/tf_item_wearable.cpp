@@ -536,8 +536,17 @@ bool CTFWearable::UpdateBodygroups( CBaseCombatCharacter* pOwner, int iState )
 
 		// Update our disguise bodygroup.
 		int iDisguiseBody = pTFOwner->m_Shared.GetDisguiseBody();
-		int iTeam = pTFOwner->m_Shared.GetDisguiseTeam();
+
+		// Try team 0 first (like disguise weapons), then fall back to disguise team
+		int iTeam = 0;
 		int iNumBodyGroups = pItem->GetStaticData()->GetNumModifiedBodyGroups( iTeam );
+		if ( iNumBodyGroups == 0 )
+		{
+			// No bodygroups for team 0, try the disguise team
+			iTeam = pTFOwner->m_Shared.GetDisguiseTeam();
+			iNumBodyGroups = pItem->GetStaticData()->GetNumModifiedBodyGroups( iTeam );
+		}
+
 		for ( int i=0; i<iNumBodyGroups; ++i )
 		{
 			int iBody = 0;
