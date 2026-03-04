@@ -3305,11 +3305,20 @@ bool CTFWeaponBase::OnInternalDrawModel( ClientModelRenderInfo_t *pInfo )
 void CTFWeaponBase::UpdateAttachmentModels( void )
 {
 #ifdef CLIENT_DLL
-	// For disguise weapons, we need to use team 0 when fetching attachment models
-	// (similar to the bodygroups fix) because GetTeamNumber() returns the spy's team,
-	// not the disguised target's team.
+	// For disguise weapons, we need to use the disguise target's team when fetching attachment models
+	// because GetTeamNumber() returns the spy's team, not the disguised target's team.
 	if ( m_bDisguiseWeapon )
 	{
+		C_TFPlayer *pOwner = ToTFPlayer( GetOwnerEntity() );
+		if ( !pOwner )
+		{
+			BaseClass::UpdateAttachmentModels();
+			return;
+		}
+
+		C_TFPlayer *pDisguiseTarget = pOwner->m_Shared.GetDisguiseTarget();
+		int iTeamNumber = pDisguiseTarget ? pDisguiseTarget->GetTeamNumber() : 0;
+
 		CEconItemView *pItem = GetAttributeContainer()->GetItem();
 		GameItemDefinition_t *pItemDef = pItem && pItem->IsValid() ? pItem->GetStaticData() : NULL;
 
@@ -3317,8 +3326,6 @@ void CTFWeaponBase::UpdateAttachmentModels( void )
 		m_vecAttachedModels.Purge();
 		if ( pItemDef && AttachmentModelsShouldBeVisible() )
 		{
-			// Must use team 0 for disguise weapons
-			int iTeamNumber = 0;
 			{
 				int iAttachedModels = pItemDef->GetNumAttachedModels( iTeamNumber );
 				for ( int i = 0; i < iAttachedModels; i++ )
