@@ -7197,6 +7197,8 @@ void CTFPlayerShared::OnRemoveDisguising( void )
 void CTFPlayerShared::OnRemoveDisguised( void )
 {
 #ifdef CLIENT_DLL
+	// Save the disguise target before clearing it, so we can mark bodygroups dirty.
+	CTFPlayer *pOldDisguiseTarget = ToTFPlayer( m_hDisguiseTarget.Get() );
 
 	if ( m_pOuter->GetPredictable() && ( !prediction->IsFirstTimePredicted() || m_bSyncingConditions ) )
 		return;
@@ -7221,7 +7223,14 @@ void CTFPlayerShared::OnRemoveDisguised( void )
 	UpdateCritBoostEffect( kCritBoost_ForceRefresh );
 	m_pOuter->UpdateSpyStateChange();
 
+	// Mark the old disguise target's bodygroups as dirty so they'll be recalculated.
+	if ( pOldDisguiseTarget )
+	{
+		pOldDisguiseTarget->SetBodygroupsDirty();
+	}
+
 #else
+
 	m_nDisguiseTeam  = TF_SPY_UNDEFINED;
 	m_nDisguiseClass.Set( TF_CLASS_UNDEFINED );
 	m_nDisguiseSkinOverride = 0;
@@ -8514,6 +8523,11 @@ void CTFPlayerShared::DetermineDisguiseWearables()
 
 	// Remove any existing disguise wearables.
 	RemoveDisguiseWearables();
+
+#ifdef CLIENT_DLL
+	// Mark the disguise target's bodygroups as dirty so they'll be recalculated.
+	pDisguiseTarget->SetBodygroupsDirty();
+#endif
 
 	if ( GetDisguiseClass() != pDisguiseTarget->GetPlayerClass()->GetClassIndex() )
 		return;
