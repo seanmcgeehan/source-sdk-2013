@@ -74,8 +74,8 @@ public:
 protected:
 	virtual void		InternalSetPlayerDisplayModel( void );
 
-
 private:
+	void				UpdateDisguiseBodygroups( CTFPlayer *pTFOwner, CTFPlayer *pDisguiseTarget, CEconItemView *pItem, int iTeam, int iState );
 	CNetworkVar( bool, m_bDisguiseWearable );
 	CNetworkHandle( CBaseEntity, m_hWeaponAssociatedWith );
 
