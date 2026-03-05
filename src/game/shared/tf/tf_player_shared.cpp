@@ -8533,11 +8533,6 @@ void CTFPlayerShared::DetermineDisguiseWearables()
 	// Remove any existing disguise wearables.
 	RemoveDisguiseWearables();
 
-#ifdef CLIENT_DLL
-	// Mark the disguise target's bodygroups as dirty so they'll be recalculated.
-	pDisguiseTarget->SetBodygroupsDirty();
-#endif
-
 	if ( GetDisguiseClass() != pDisguiseTarget->GetPlayerClass()->GetClassIndex() )
 		return;
 
@@ -8585,6 +8580,12 @@ void CTFPlayerShared::DetermineDisguiseWearables()
 	}
 
 	m_nDisguiseSkinOverride = iPlayerSkinOverride;
+
+#ifdef CLIENT_DLL
+	// Mark the disguise target's bodygroups as dirty AFTER creating disguise wearables.
+	// This ensures bodygroups are recalculated with the new disguise wearables present.
+	pDisguiseTarget->SetBodygroupsDirty();
+#endif
 }
 
 void CTFPlayerShared::RemoveDisguiseWearables()
