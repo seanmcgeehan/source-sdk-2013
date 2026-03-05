@@ -8527,11 +8527,16 @@ void CTFPlayerShared::DetermineDisguiseWeapon( bool bForcePrimary )
 void CTFPlayerShared::DetermineDisguiseWearables()
 {
 	CTFPlayer *pDisguiseTarget = ToTFPlayer( m_hDisguiseTarget.Get() );
-	if ( !pDisguiseTarget )
-		return;
 
 	// Remove any existing disguise wearables.
 	RemoveDisguiseWearables();
+
+	if ( !pDisguiseTarget )
+	{
+		// No target exists, reset disguise body to default state.
+		SetDisguiseBody( 0 );
+		return;
+	}
 
 	if ( GetDisguiseClass() != pDisguiseTarget->GetPlayerClass()->GetClassIndex() )
 	{
