@@ -8200,6 +8200,15 @@ void CTFPlayerShared::Disguise( int nTeam, int nClass, CTFPlayer* pDesiredTarget
 		}
 	}
 
+#ifdef CLIENT_DLL
+	// Save the old disguise target before changing disguise, so we can clean up bodygroups.
+	CTFPlayer *pOldDisguiseTarget = ToTFPlayer( m_hDisguiseTarget.Get() );
+	if ( pOldDisguiseTarget )
+	{
+		pOldDisguiseTarget->SetBodygroupsDirty();
+	}
+#endif
+
 	m_hDesiredDisguiseTarget.Set( pDesiredTarget );
 	m_nDesiredDisguiseClass = nClass;
 	m_nDesiredDisguiseTeam = nTeam;
