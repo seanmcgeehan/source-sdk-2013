@@ -18,6 +18,10 @@
 #if defined( CLIENT_DLL )
 #define CTFWearable C_TFWearable
 #define CTFWearableVM C_TFWearableVM
+class C_TFPlayer;
+#define CTFPlayer C_TFPlayer
+#else
+class CTFPlayer;
 #endif
 
 
