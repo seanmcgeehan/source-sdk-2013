@@ -8534,7 +8534,13 @@ void CTFPlayerShared::DetermineDisguiseWearables()
 	RemoveDisguiseWearables();
 
 	if ( GetDisguiseClass() != pDisguiseTarget->GetPlayerClass()->GetClassIndex() )
+	{
+#ifdef CLIENT_DLL
+		// Mark bodygroups dirty even when not copying wearables (class mismatch).
+		pDisguiseTarget->SetBodygroupsDirty();
+#endif
 		return;
+	}
 
 	// Equip us with copies of our disguise target's wearables.
 	int iPlayerSkinOverride = 0;
@@ -8582,8 +8588,7 @@ void CTFPlayerShared::DetermineDisguiseWearables()
 	m_nDisguiseSkinOverride = iPlayerSkinOverride;
 
 #ifdef CLIENT_DLL
-	// Mark the disguise target's bodygroups as dirty AFTER creating disguise wearables.
-	// This ensures bodygroups are recalculated with the new disguise wearables present.
+	// Mark bodygroups dirty after creating disguise wearables.
 	pDisguiseTarget->SetBodygroupsDirty();
 #endif
 }
