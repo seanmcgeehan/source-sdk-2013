@@ -8566,6 +8566,26 @@ void CTFPlayerShared::DetermineDisguiseWearables()
 
 void CTFPlayerShared::RemoveDisguiseWearables()
 {
+	// Reset bodygroups for disguise wearables and weapon before cleanup.
+	// We do this in a separate pass first, because UpdateBodygroups on any wearable
+	// will also handle the disguise weapon's bodygroups (see CTFWearable::UpdateBodygroups).
+	CTFPlayer *pDisguiseTarget = ToTFPlayer( m_hDisguiseTarget.Get() );
+	if ( pDisguiseTarget )
+	{
+		for ( int i = 0; i < m_pOuter->GetNumWearables(); ++i )
+		{
+			CTFWearable *pWearable = dynamic_cast<CTFWearable*>( m_pOuter->GetWearable( i ) );
+			if ( pWearable && pWearable->IsDisguiseWearable() )
+			{
+				// Reset bodygroups to 0 (hidden state) on the disguise target.
+				// This also handles disguise weapon bodygroups automatically.
+				pWearable->UpdateBodygroups( pDisguiseTarget, 0 );
+				break; // Only need to call this once since it handles both wearables and weapon
+			}
+		}
+	}
+
+	// Now remove all disguise wearables.
 	bool bFoundDisguiseWearable = true;
 	while ( bFoundDisguiseWearable )
 	{
