@@ -8540,12 +8540,18 @@ void CTFPlayerShared::DetermineDisguiseWearables()
 
 	if ( GetDisguiseClass() != pDisguiseTarget->GetPlayerClass()->GetClassIndex() )
 	{
+		// Class mismatch, reset disguise body to default.
+		SetDisguiseBody( 0 );
 #ifdef CLIENT_DLL
 		// Mark bodygroups dirty even when not copying wearables (class mismatch).
 		pDisguiseTarget->SetBodygroupsDirty();
 #endif
 		return;
 	}
+
+	// Reset disguise body to default before applying new wearables.
+	// This ensures old bodygroup modifications don't carry over.
+	SetDisguiseBody( 0 );
 
 	// Equip us with copies of our disguise target's wearables.
 	int iPlayerSkinOverride = 0;
