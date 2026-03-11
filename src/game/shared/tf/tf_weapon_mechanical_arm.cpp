@@ -7,6 +7,7 @@
 #include "cbase.h"
 #include "tf_weapon_mechanical_arm.h"
 #include "in_buttons.h"
+#include "animation.h"
 
 #if !defined( CLIENT_DLL )
 #include "tf_player.h"
