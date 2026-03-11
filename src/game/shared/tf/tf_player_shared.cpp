@@ -8492,7 +8492,7 @@ void CTFPlayerShared::DetermineDisguiseWeapon( bool bForcePrimary )
 			m_hDisguiseWeapon->m_bDisguiseWeapon = true;
 			m_hDisguiseWeapon->SetContextThink( &CTFWeaponBase::DisguiseWeaponThink, gpGlobals->curtime + 0.5, "DisguiseWeaponThink" );
 
-			m_hDisguiseWeapon->UpdateExtraWearables();
+			m_hDisguiseWeapon->Equip( m_pOuter );
 
 			// Ammo/clip state is displayed to attached medics
 			m_iDisguiseAmmo = 0;

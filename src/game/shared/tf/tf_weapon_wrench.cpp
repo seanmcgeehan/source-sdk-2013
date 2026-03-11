@@ -407,6 +407,7 @@ void CTFRobotArm::Equip( CBaseCombatCharacter* pOwner )
 	CTFWearable* pArmItem = dynamic_cast<CTFWearable*>( CreateEntityByName( "tf_wearable_robot_arm" ) );
 	if ( pArmItem )
 	{
+		pArmItem->SetDisguiseWearable( m_bDisguiseWeapon );
 		pArmItem->AddSpawnFlags( SF_NORESPAWN );
 		pArmItem->SetAlwaysAllow( true );
 		DispatchSpawn( pArmItem );
