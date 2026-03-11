@@ -516,13 +516,53 @@ bool CTFMechanicalArm::UpdateBodygroups( CBaseCombatCharacter* pOwner, int iStat
 	if ( !pOwner )
 		return false;
 
-	iState = pOwner->GetActiveWeapon() == this;
+	CTFPlayer *pTFOwner = ToTFPlayer( pOwner );
+	if ( !pTFOwner )
+		return false;
+
+	// For disguise weapons, check if this is the current disguise weapon
+	if ( m_bDisguiseWeapon )
+	{
+		iState = pTFOwner->m_Shared.GetDisguiseWeapon() == this;
+	}
+	else
+	{
+		iState = pOwner->GetActiveWeapon() == this;
+	}
 
 	bool res = BaseClass::UpdateBodygroups( pOwner, iState );
 
-	CTFPlayer *pTFOwner = ToTFPlayer( pOwner );
-	if ( pTFOwner )
+	if ( m_bDisguiseWeapon )
 	{
+		// For disguise weapons, update the player model bodygroups
+		CAttributeContainer *pCont = GetAttributeContainer();
+		CEconItemView *pItem = pCont ? pCont->GetItem() : NULL;
+		CTFPlayer *pDisguiseTarget = pTFOwner->m_Shared.GetDisguiseTarget();
+
+		if ( pItem && pDisguiseTarget )
+		{
+			// Update disguise bodygroups on the player model (same logic as CTFWearable::UpdateDisguiseBodygroups)
+			int iDisguiseBody = pTFOwner->m_Shared.GetDisguiseBody();
+			int iNumBodyGroups = pItem->GetStaticData()->GetNumModifiedBodyGroups( 0 );
+
+			for ( int i = 0; i < iNumBodyGroups; ++i )
+			{
+				int iBody = 0;
+				const char *pszBodyGroup = pItem->GetStaticData()->GetModifiedBodyGroup( 0, i, iBody );
+				int iBodyGroup = pDisguiseTarget->FindBodygroupByName( pszBodyGroup );
+
+				if ( iBodyGroup == -1 )
+					continue;
+
+				::SetBodygroup( pDisguiseTarget->GetModelPtr(), iDisguiseBody, iBodyGroup, iState );
+			}
+
+			pTFOwner->m_Shared.SetDisguiseBody( iDisguiseBody );
+		}
+	}
+	else
+	{
+		// For normal weapons, update viewmodel bodygroups
 		CBaseViewModel *pVM = pTFOwner->GetViewModel();
 		if ( pVM )
 		{
