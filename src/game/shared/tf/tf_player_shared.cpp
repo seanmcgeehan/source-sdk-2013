@@ -22,6 +22,7 @@
 #include "tf_weapon_lunchbox.h"
 #include "tf_weapon_flaregun.h"
 #include "tf_weapon_wrench.h"
+#include "tf_weapon_mechanical_arm.h"
 #include "econ_wearable.h"
 #include "econ_item_system.h"
 #include "tf_weapon_knife.h"
@@ -8491,10 +8492,23 @@ void CTFPlayerShared::DetermineDisguiseWeapon( bool bForcePrimary )
 			m_hDisguiseWeapon->m_iState = WEAPON_IS_ACTIVE;
 			m_hDisguiseWeapon->m_bDisguiseWeapon = true;
 			m_hDisguiseWeapon->SetContextThink( &CTFWeaponBase::DisguiseWeaponThink, gpGlobals->curtime + 0.5, "DisguiseWeaponThink" );
+
+			// Create extra wearables for this disguise weapon (e.g., Battalion's Backup)
 			m_hDisguiseWeapon->UpdateExtraWearables();
-			m_hDisguiseWeapon->UpdateExtraWearables();
-			m_hDisguiseWeapon->Equip( dynamic_cast<CBaseCombatCharacter*>(m_pOuter) );
-			m_hDisguiseWeapon->UpdateBodyGroups();
+
+			// Special case: Gunslinger needs Equip() to create the robot arm wearable
+			CTFRobotArm *pRobotArm = dynamic_cast<CTFRobotArm*>( m_hDisguiseWeapon.Get() );
+			if ( pRobotArm && pRobotArm->IsPDQ() )
+			{
+				pRobotArm->Equip( dynamic_cast<CBaseCombatCharacter*>(m_pOuter) );
+			}
+
+			// Special case: Short Circuit needs UpdateBodygroups for disguise weapons
+			CTFMechanicalArm *pMechanicalArm = dynamic_cast<CTFMechanicalArm*>( m_hDisguiseWeapon.Get() );
+			if ( pMechanicalArm )
+			{
+				pMechanicalArm->UpdateBodygroups( m_pOuter, 1 );
+			}
 
 
 			// Ammo/clip state is displayed to attached medics
