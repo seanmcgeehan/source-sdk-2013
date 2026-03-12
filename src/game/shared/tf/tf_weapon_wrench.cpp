@@ -414,7 +414,7 @@ void CTFRobotArm::Equip( CBaseCombatCharacter* pOwner )
 		pArmItem->GiveTo( pOwner );
 		pArmItem->AddHiddenBodyGroup( "rightarm" );
 		pArmItem->SetOwnerEntity( pOwner );
-		pArmItem->UpdateBodyGroups(pOwner, 1);
+		pArmItem->UpdateBodygroups(pOwner, 1);
 		m_hRobotArm.Set( pArmItem );
 	}
 }
