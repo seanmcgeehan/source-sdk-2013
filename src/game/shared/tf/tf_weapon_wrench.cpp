@@ -408,11 +408,13 @@ void CTFRobotArm::Equip( CBaseCombatCharacter* pOwner )
 	if ( pArmItem )
 	{
 		pArmItem->AddSpawnFlags( SF_NORESPAWN );
+		pArmItem->SetDisguiseWearable(m_bDisguiseWeapon);
 		pArmItem->SetAlwaysAllow( true );
 		DispatchSpawn( pArmItem );
 		pArmItem->GiveTo( pOwner );
 		pArmItem->AddHiddenBodyGroup( "rightarm" );
 		pArmItem->SetOwnerEntity( pOwner );
+		pArmItem->UpdateBodyGroups(pOwner, 1);
 		m_hRobotArm.Set( pArmItem );
 	}
 }
