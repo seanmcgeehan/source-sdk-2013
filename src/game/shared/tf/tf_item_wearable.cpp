@@ -599,13 +599,36 @@ bool CTFWearable::UpdateBodygroups( CBaseCombatCharacter* pOwner, int iState )
 	}
 
 	// Additional hidden bodygroups.
-	for ( int i=0; i<m_HiddenBodyGroups.Count(); ++i )
+	// For disguise wearables, apply hidden bodygroups to the disguise target, not the spy.
+	CBaseCombatCharacter *pBodygroupTarget = pOwner;
+	if ( m_bDisguiseWearable )
 	{
-		int iBodyGroup = pOwner->FindBodygroupByName( m_HiddenBodyGroups[i] );
-		if ( iBodyGroup == -1 )
-			continue;
-		pOwner->SetBodygroup( iBodyGroup, iState );
-	}	
+		CTFPlayer *pDisguiseTarget = pTFOwner->m_Shared.GetDisguiseTarget();
+		if ( pDisguiseTarget )
+		{
+			pBodygroupTarget = pDisguiseTarget;
+			// For disguise wearables, we need to use the disguise body and set it properly
+			int iDisguiseBody = pTFOwner->m_Shared.GetDisguiseBody();
+			for ( int i=0; i<m_HiddenBodyGroups.Count(); ++i )
+			{
+				int iBodyGroup = pBodygroupTarget->FindBodygroupByName( m_HiddenBodyGroups[i] );
+				if ( iBodyGroup == -1 )
+					continue;
+				::SetBodygroup( pDisguiseTarget->GetModelPtr(), iDisguiseBody, iBodyGroup, iState );
+			}
+			pTFOwner->m_Shared.SetDisguiseBody( iDisguiseBody );
+		}
+	}
+	else
+	{
+		for ( int i=0; i<m_HiddenBodyGroups.Count(); ++i )
+		{
+			int iBodyGroup = pOwner->FindBodygroupByName( m_HiddenBodyGroups[i] );
+			if ( iBodyGroup == -1 )
+				continue;
+			pOwner->SetBodygroup( iBodyGroup, iState );
+		}
+	}
 
 	return true;
 }
