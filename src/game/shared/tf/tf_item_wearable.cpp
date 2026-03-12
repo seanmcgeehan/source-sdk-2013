@@ -580,11 +580,18 @@ bool CTFWearable::UpdateBodygroups( CBaseCombatCharacter* pOwner, int iState )
 			// We must use team 0 for disguise weapons.
 			UpdateDisguiseBodygroups( pTFOwner, pDisguiseTarget, pItem, 0, iState );
 
-			 CTFMechanicalArm *pMechArm = dynamic_cast<CTFMechanicalArm*>( pTFOwner->GetActiveTFWeapon() );
+			 CTFMechanicalArm *pMechArm = dynamic_cast<CTFMechanicalArm*>( pDisguiseWeapon );
   			if ( pMechArm ){
       			// Hack, Short circuit is special case and should be off if it is the disguise weapon.
-				UpdateDisguiseBodygroups( pTFOwner, pDisguiseTarget, pItem, 0, 1 );
-  			}
+				// Directly set the bodygroup since UpdateDisguiseBodygroups doesn't work for this weapon
+				int iDisguiseBody = pTFOwner->m_Shared.GetDisguiseBody();
+				int iBodyGroup = pDisguiseTarget->FindBodygroupByName( "rightarm" );
+				if ( iBodyGroup != -1 )
+				{
+					::SetBodygroup( pDisguiseTarget->GetModelPtr(), iDisguiseBody, iBodyGroup, 0 );
+					pTFOwner->m_Shared.SetDisguiseBody( iDisguiseBody );
+				}
+			}
 		}
 	}
 
