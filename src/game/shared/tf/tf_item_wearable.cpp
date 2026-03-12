@@ -10,6 +10,7 @@
 #include "tf_gamerules.h"
 #include "animation.h"
 #include "basecombatweapon_shared.h"
+#include "tf_weapon_mechanical_arm.h"
 #ifdef CLIENT_DLL
 #include "c_tf_player.h"
 #include "model_types.h"
