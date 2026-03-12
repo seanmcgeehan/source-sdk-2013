@@ -401,19 +401,41 @@ void CTFRobotArm::Equip( CBaseCombatCharacter* pOwner )
 {
 	BaseClass::Equip( pOwner );
 
+	UpdateExtraWearables();
+}
+
+//-----------------------------------------------------------------------------
+// Purpose:
+//-----------------------------------------------------------------------------
+void CTFRobotArm::UpdateExtraWearables()
+{
+	BaseClass::UpdateExtraWearables();
+
 	if ( !IsPDQ() )
+		return;
+
+	// If we already have a robot arm, don't create another one
+	if ( m_hRobotArm.Get() )
 		return;
 
 	CTFWearable* pArmItem = dynamic_cast<CTFWearable*>( CreateEntityByName( "tf_wearable_robot_arm" ) );
 	if ( pArmItem )
 	{
+		pArmItem->SetDisguiseWearable( m_bDisguiseWeapon );
 		pArmItem->AddSpawnFlags( SF_NORESPAWN );
 		pArmItem->SetAlwaysAllow( true );
 		DispatchSpawn( pArmItem );
-		pArmItem->GiveTo( pOwner );
+		pArmItem->GiveTo( GetOwner() );
 		pArmItem->AddHiddenBodyGroup( "rightarm" );
-		pArmItem->SetOwnerEntity( pOwner );
+		pArmItem->SetOwnerEntity( GetOwner() );
 		m_hRobotArm.Set( pArmItem );
+
+		// Equip the wearable to ensure bodygroups are updated
+		CBasePlayer *pPlayerOwner = dynamic_cast<CBasePlayer *>( GetOwner() );
+		if ( pPlayerOwner )
+		{
+			pArmItem->Equip( pPlayerOwner );
+		}
 	}
 }
 

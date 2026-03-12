@@ -83,6 +83,7 @@ public:
 	virtual int			GetDamageCustom();
 	virtual float		GetForceScale( void );
 	virtual bool 		HideAttachmentsAndShowBodygroupsWhenPerformingWeaponIndependentTaunt() const OVERRIDE { return false; }
+	virtual void		UpdateExtraWearables() OVERRIDE;
 #endif
 
 	virtual void		PrimaryAttack();
