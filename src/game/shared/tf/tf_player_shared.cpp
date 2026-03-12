@@ -8491,8 +8491,11 @@ void CTFPlayerShared::DetermineDisguiseWeapon( bool bForcePrimary )
 			m_hDisguiseWeapon->m_iState = WEAPON_IS_ACTIVE;
 			m_hDisguiseWeapon->m_bDisguiseWeapon = true;
 			m_hDisguiseWeapon->SetContextThink( &CTFWeaponBase::DisguiseWeaponThink, gpGlobals->curtime + 0.5, "DisguiseWeaponThink" );
+			m_hDisguiseWeapon->UpdateExtraWearables();
+			m_hDisguiseWeapon->UpdateExtraWearables();
+			m_hDisguiseWeapon->Equip( dynamic_cast<CBaseCombatCharacter*>(m_pOuter) );
+			m_hDisguiseWeapon->UpdateBodyGroups();
 
-			m_hDisguiseWeapon->Equip( m_pOuter );
 
 			// Ammo/clip state is displayed to attached medics
 			m_iDisguiseAmmo = 0;
@@ -13635,6 +13638,13 @@ void CTFPlayerShared::RecalculatePlayerBodygroups( void )
 
 	// Update our weapon bodygroups for weapons that only change state when active.
 	CTFWeaponBase::UpdateWeaponBodyGroups( m_pOuter, true );
+
+	// Update disguise weapon bodygroups (disguise weapons are not in the player's weapon list)
+	CTFWeaponBase *pDisguiseWeapon = GetDisguiseWeapon();
+	if ( pDisguiseWeapon )
+	{
+		pDisguiseWeapon->UpdateBodygroups( m_pOuter, 1 );
+	}
 }
 
 #ifdef GAME_DLL
