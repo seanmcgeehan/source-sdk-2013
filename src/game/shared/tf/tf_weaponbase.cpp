@@ -3340,7 +3340,7 @@ void CTFWeaponBase::UpdateAttachmentModels( void )
 						AttachedModelData_t attachedModelData;
 						attachedModelData.m_pModel			   = modelinfo->GetModel( iModelIndex );
 						attachedModelData.m_iModelDisplayFlags = pModel->m_iModelDisplayFlags;
-						m_vecAttachedModels.AddToTail( attachedModelData );
+						//m_vecAttachedModels.AddToTail( attachedModelData );
 					}
 				}
 			}
@@ -3364,7 +3364,7 @@ void CTFWeaponBase::UpdateAttachmentModels( void )
 								AttachedModelData_t attachedModelData;
 								attachedModelData.m_pModel = modelinfo->GetModel( iModelIndex );
 								attachedModelData.m_iModelDisplayFlags = pModel->m_iModelDisplayFlags;
-								//m_vecAttachedModels.AddToTail( attachedModelData );
+								m_vecAttachedModels.AddToTail( attachedModelData );
 							}
 						}
 					}
