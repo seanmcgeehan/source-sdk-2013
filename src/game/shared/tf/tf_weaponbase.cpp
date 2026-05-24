@@ -3340,7 +3340,7 @@ void CTFWeaponBase::UpdateAttachmentModels( void )
 						AttachedModelData_t attachedModelData;
 						attachedModelData.m_pModel			   = modelinfo->GetModel( iModelIndex );
 						attachedModelData.m_iModelDisplayFlags = pModel->m_iModelDisplayFlags;
-						//m_vecAttachedModels.AddToTail( attachedModelData );
+						m_vecAttachedModels.AddToTail( attachedModelData );
 					}
 				}
 			}
@@ -3373,11 +3373,7 @@ void CTFWeaponBase::UpdateAttachmentModels( void )
 		}
 		// Note: We skip the viewmodel attachment section (ShouldAttachToHands) because
 		// disguise weapons are world models only and don't need viewmodel attachments.
-		// Release any attachment created before m_bDisguiseWeapon was networked true.
-		if ( m_hViewmodelAttachment )
-		{
-			m_hViewmodelAttachment->Release();
-		}
+
 	}
 	else
 	{
