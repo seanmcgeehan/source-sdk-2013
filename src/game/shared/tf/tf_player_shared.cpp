@@ -8525,7 +8525,23 @@ void CTFPlayerShared::DetermineDisguiseWeapon( bool bForcePrimary )
 			m_hDisguiseWeapon->m_bDisguiseWeapon = true;
 			m_hDisguiseWeapon->SetContextThink( &CTFWeaponBase::DisguiseWeaponThink, gpGlobals->curtime + 0.5, "DisguiseWeaponThink" );
 			m_hDisguiseWeapon->RemoveExtraWearables();
-			m_hDisguiseWeapon->UpdateExtraWearables();
+
+			// Cap accumulated disguise wearables. Each disguise-weapon swap
+			// intentionally orphans the prior weapon's world extras (so banners
+			// etc. stay visible across swaps); skip recreation once we're at
+			// the cap so they can't grow unbounded under rapid cycling.
+			const int kMaxDisguiseWearables = 5;
+			int nDisguiseWearableCount = 0;
+			for ( int i = 0; i < m_pOuter->GetNumWearables(); ++i )
+			{
+				CTFWearable *pWearable = dynamic_cast< CTFWearable * >( m_pOuter->GetWearable( i ) );
+				if ( pWearable && pWearable->IsDisguiseWearable() )
+					nDisguiseWearableCount++;
+			}
+			if ( nDisguiseWearableCount < kMaxDisguiseWearables )
+			{
+				m_hDisguiseWeapon->UpdateExtraWearables();
+			}
 
 			// Ammo/clip state is displayed to attached medics
 			m_iDisguiseAmmo = 0;
