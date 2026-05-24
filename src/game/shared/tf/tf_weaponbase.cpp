@@ -1118,11 +1118,15 @@ void CTFWeaponBase::Drop( const Vector &vecVelocity )
 	}
 #endif
 
+	// Must run before BaseClass::Drop — that clears OwnerEntity, and
+	// RemoveExtraWearables → wearable->RemoveFrom(GetOwnerEntity()) no-ops on NULL,
+	// orphaning the wearable on the player (e.g. botkiller medigun head on
+	// disguise-weapon swap).
+	RemoveExtraWearables();
+
 	BaseClass::Drop( vecVelocity );
 
 	ReapplyProvision();
-
-	RemoveExtraWearables();
 
 #ifndef CLIENT_DLL
 	// Never allow weapons to lie around on the ground
