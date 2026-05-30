@@ -8461,7 +8461,10 @@ void CTFPlayerShared::DetermineDisguiseWeapon( bool bForcePrimary )
 				// reset bodygroups if previously disguised weapon was short circuit or Heavy fists, due to stale body groups
 				// all other cases need to be kept to preserve body groups (gunslinger / medic backpack / huntsman arrows etc)
 				SetDisguiseBody( 0 );
-				m_pOuter->SetBodygroupsDirty();
+#ifdef CLIENT_DLL
+
+				mpOuter->SetBodygroupsDirty();
+#endif
 			} 
 		}
 
@@ -8610,7 +8613,7 @@ void CTFPlayerShared::DetermineDisguiseWearables()
 		SetDisguiseBody( 0 );
 #ifdef CLIENT_DLL
 		// Mark bodygroups dirty even when not copying wearables (class mismatch).
-		pDisguiseTarget->SetBodygroupsDirty();
+		m_pOuter->SetBodygroupsDirty();
 #endif
 		return;
 	}
