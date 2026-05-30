@@ -32,6 +32,8 @@
 #include "tf_dropped_weapon.h"
 #include "tf_weapon_passtime_gun.h"
 #include "tf_weapon_rocketpack.h"
+#include "tf_weapon_mechanical_arm.h"
+#include "tf_weapon_fists.h"
 #include <functional>
 
 // Client specific.
@@ -8490,6 +8492,13 @@ void CTFPlayerShared::DetermineDisguiseWeapon( bool bForcePrimary )
 
 	if ( strDisguiseWeapon )
 	{
+		if ( m_hDisguiseWeapon && ( dynamic_cast<CTFMechanicalArm*>( m_hDisguiseWeapon ) || dynamic_cast<CTFFists*>( m_hDisguiseWeapon ) ) )
+		{
+			// reset bodygroups if previously disguised weapon was short circuit or Heavy fists, due to stale body groups
+			// all other cases need to be kept to preserve body groups (gunslinger / medic backpack / huntsman arrows etc)
+			SetDisguiseBody( 0 );
+		} 
+
 		// Remove the old disguise weapon, if any.
 		RemoveDisguiseWeapon();
 
