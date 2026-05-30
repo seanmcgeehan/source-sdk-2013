@@ -8419,6 +8419,9 @@ void CTFPlayerShared::DetermineDisguiseWeapon( bool bForcePrimary )
 	}
 
 	CTFWeaponBase *pItemWeapon = NULL;
+
+
+	bool bShouldRecalculateBodygroups = false;
 	if ( pDisguiseTarget )
 	{
 		CTFWeaponBase *pLastDisguiseWeapon = m_hDisguiseWeapon;
@@ -8454,17 +8457,9 @@ void CTFPlayerShared::DetermineDisguiseWeapon( bool bForcePrimary )
 
 		if ( pItemWeapon )
 		{
-			Msg( "Disguise weapon found" );
 			if ( pLastDisguiseWeapon && ( pLastDisguiseWeapon->GetWeaponID()== TF_WEAPON_MECHANICAL_ARM || pLastDisguiseWeapon->GetWeaponID() == TF_WEAPON_FISTS ) )
 			{
-				Msg( "found bad body groups" );
-				// reset bodygroups if previously disguised weapon was short circuit or Heavy fists, due to stale body groups
-				// all other cases need to be kept to preserve body groups (gunslinger / medic backpack / huntsman arrows etc)
-				SetDisguiseBody( 0 );
-#ifdef CLIENT_DLL
-
-				mpOuter->SetBodygroupsDirty();
-#endif
+				bShouldRecalculateBodygroups = true;
 			} 
 		}
 
@@ -8511,6 +8506,17 @@ void CTFPlayerShared::DetermineDisguiseWeapon( bool bForcePrimary )
 
 		// Remove the old disguise weapon, if any.
 		RemoveDisguiseWeapon();
+
+		if ( bShouldRecalculateBodygroups )
+		{
+				// reset bodygroups if previously disguised weapon was short circuit or Heavy fists, due to stale body groups
+				// all other cases need to be kept to preserve body groups (gunslinger / medic backpack / huntsman arrows etc)
+				SetDisguiseBody( 0 );
+#ifdef CLIENT_DLL
+
+				mpOuter->SetBodygroupsDirty();
+#endif
+		}
 
 		CEconItemView *pItem = NULL;
 		if ( pItemWeapon )
