@@ -8454,8 +8454,10 @@ void CTFPlayerShared::DetermineDisguiseWeapon( bool bForcePrimary )
 
 		if ( pItemWeapon )
 		{
-			if ( pLastDisguiseWeapon && ( dynamic_cast<CTFMechanicalArm*>( pLastDisguiseWeapon ) || dynamic_cast<CTFFists*>( pLastDisguiseWeapon ) ) )
+			Msg( "Disguise weapon found" );
+			if ( pLastDisguiseWeapon && ( pLastDisguiseWeapon->GetWeaponID()== TF_WEAPON_MECHANICAL_ARM || pLastDisguiseWeapon->GetWeaponID() == TF_WEAPON_FISTS ) )
 			{
+				Msg( "found bad body groups" );
 				// reset bodygroups if previously disguised weapon was short circuit or Heavy fists, due to stale body groups
 				// all other cases need to be kept to preserve body groups (gunslinger / medic backpack / huntsman arrows etc)
 				SetDisguiseBody( 0 );
