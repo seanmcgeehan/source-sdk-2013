@@ -10503,6 +10503,11 @@ CTFWeaponBase *GetKilleaterWeaponFromDamageInfo( const CTakeDamageInfo *pInfo )
 				if ( pLaserPointer && pLaserPointer->HasLaserDot() )
 				{
 					pTFWeapon =  pLaserPointer;
+				} 
+				else
+				{
+					// Otherwise, the sentry is the weapon and we should credit the wrench
+					pTFWeapon = dynamic_cast<CTFWeaponBase*>(pBuilder->GetEntityForLoadoutSlot(LOADOUT_POSITION_MELEE));
 				}
 			}
 		}
@@ -11320,6 +11325,7 @@ void CTFGameRules::PlayerKilled( CBasePlayer *pVictim, const CTakeDamageInfo &in
 	CBaseMultiplayerPlayer *pScorer = ToBaseMultiplayerPlayer( GetDeathScorer( pKiller, pInflictor, pVictim ) );
 	CTFPlayer *pAssister = NULL;
 	CBaseObject *pObject = NULL;
+	CObjectSentrygun* pSentrygun = NULL;
 
 	// if inflictor or killer is a base object, tell them that they got a kill
 	// ( depends if a sentry rocket got the kill, sentry may be inflictor or killer )
@@ -11368,7 +11374,7 @@ void CTFGameRules::PlayerKilled( CBasePlayer *pVictim, const CTakeDamageInfo &in
 		if ( pObject->ObjectType() == OBJ_SENTRYGUN )
 		{
 			// notify the sentry
-			CObjectSentrygun *pSentrygun = dynamic_cast<CObjectSentrygun *>( pObject );
+			pSentrygun = dynamic_cast<CObjectSentrygun *>( pObject );
 			if ( pSentrygun )
 			{
 				pSentrygun->OnKilledEnemy( pVictim );
@@ -11608,7 +11614,9 @@ void CTFGameRules::PlayerKilled( CBasePlayer *pVictim, const CTakeDamageInfo &in
 			if ( !( IsPVEModeActive() && pTFPlayerVictim->GetTeamNumber() == TF_TEAM_PVE_INVADERS ) )
 			{
 				// Any type of non-robot kill!
-				EconEntity_OnOwnerKillEaterEvent( pAttackerEconWeapon, pTFPlayerScorer, pTFPlayerVictim, eKillEaterEvent );
+				if ( !pSentrygun ) {
+					EconEntity_OnOwnerKillEaterEvent(pAttackerEconWeapon, pTFPlayerScorer, pTFPlayerVictim, eKillEaterEvent);
+				}
 
 				// Cosmetic any kill type tracking
 				{
